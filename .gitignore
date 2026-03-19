@@ -3,3 +3,7 @@
 .env.*.local
 *.key
 *.pem
+.env
+.env.local
+*.key
+*.pem

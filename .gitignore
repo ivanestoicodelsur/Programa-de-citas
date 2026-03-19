@@ -3,7 +3,9 @@
 .env.*.local
 *.key
 *.pem
-.env
-.env.local
-*.key
-*.pem
+node_modules/
+data/
+*.sqlite
+*.db
+*.jar
+*.log

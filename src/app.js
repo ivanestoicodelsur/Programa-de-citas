@@ -58,6 +58,10 @@ app.use(
 app.use(express.json({ limit: "1mb" }));
 app.use(morgan("dev"));
 
+app.get("/", (_req, res) => {
+  res.json({ status: "OK", service: "gofix-api", timestamp: new Date().toISOString() });
+});
+
 app.get("/api/health", (_req, res) => {
   res.json({ status: "ok", service: "repair-services-backend" });
 });

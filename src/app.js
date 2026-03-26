@@ -3,13 +3,18 @@ import cors from "cors";
 import express from "express";
 import helmet from "helmet";
 import morgan from "morgan";
+import path from "path";
+import { fileURLToPath } from "url";
 import authRoutes from "./routes/authRoutes.js";
 import documentRoutes from "./routes/documentRoutes.js";
 import googleSheetsRoutes from "./routes/googleSheetsRoutes.js";
 import inventoryRoutes from "./routes/inventoryRoutes.js";
 import landingRoutes from "./routes/landingRoutes.js";
 import chatRoutes from "./routes/chatRoutes.js";
+import assetRoutes from "./routes/assetRoutes.js";
 import { errorHandler, notFoundHandler } from "./middlewares/errorHandler.js";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export const app = express();
 
@@ -66,11 +71,15 @@ app.get("/api/health", (_req, res) => {
   res.json({ status: "ok", service: "repair-services-backend" });
 });
 
+// Serve uploaded files as static assets
+app.use("/uploads", express.static(path.join(__dirname, "../public/uploads")));
+
 app.use("/api", landingRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/documents", documentRoutes);
 app.use("/api/inventory", inventoryRoutes);
+app.use("/api/assets", assetRoutes);
 app.use("/api/integrations/google-sheets", googleSheetsRoutes);
 
 app.use(notFoundHandler);

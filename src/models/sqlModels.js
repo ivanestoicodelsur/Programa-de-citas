@@ -6,6 +6,7 @@ export let InventoryItem;
 export let Document;
 export let Customer;
 export let Quote;
+export let Asset;
 
 export function initSqlModels(sequelize) {
   User = sequelize.define(
@@ -225,4 +226,28 @@ export function initSqlModels(sequelize) {
 
   Customer.hasMany(Quote, { as: "quotes", foreignKey: "customerId" });
   Quote.belongsTo(Customer, { as: "customer", foreignKey: "customerId" });
+
+  Asset = sequelize.define(
+    "Asset",
+    {
+      id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+      },
+      title:       { type: DataTypes.STRING,  allowNull: false },
+      type:        { type: DataTypes.ENUM("image", "video", "text", "script", "landing", "other"), allowNull: false, defaultValue: "other" },
+      url:         { type: DataTypes.STRING,  allowNull: true },
+      content:     { type: DataTypes.TEXT,    allowNull: true },
+      mimeType:    { type: DataTypes.STRING,  allowNull: true },
+      fileSize:    { type: DataTypes.INTEGER, allowNull: true },
+      tags:        { type: DataTypes.JSONB,   allowNull: false, defaultValue: [] },
+      landingPage: { type: DataTypes.STRING,  allowNull: true },
+      isPublic:    { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
+    },
+    { tableName: "assets" }
+  );
+
+  User.hasMany(Asset, { as: "assets", foreignKey: "createdById" });
+  Asset.belongsTo(User, { as: "createdBy", foreignKey: "createdById" });
 }

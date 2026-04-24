@@ -8,11 +8,26 @@ import { captureLead, markAsPurchaser, findLeadByEmailOrPhone } from "../service
 export const checkoutRouter = express.Router();
 export const webhookRouter = express.Router();
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
-  apiVersion: "2024-11-20.acacia",
-});
+// Lazy init: no leemos STRIPE_SECRET_KEY en module load porque
+// el orden de imports con ESM + dotenv puede dejar process.env vacío
+// al momento de instanciar. Lo leemos la primera vez que se necesita.
+let _stripe = null;
+function getStripe() {
+  if (_stripe) return _stripe;
+  const key = process.env.STRIPE_SECRET_KEY;
+  if (!key) {
+    const err = new Error("STRIPE_SECRET_KEY no está configurado en el entorno");
+    err.status = 500;
+    err.code = "STRIPE_NOT_CONFIGURED";
+    throw err;
+  }
+  _stripe = new Stripe(key, { apiVersion: "2024-11-20.acacia" });
+  return _stripe;
+}
 
-const PORTAL_URL = process.env.PORTAL_URL || "https://gofixlibros.com/portal";
+function portalUrl() {
+  return process.env.PORTAL_URL || "https://gofixlibros.com/portal";
+}
 
 /* ------------------------------------------------------------------
  * POST /api/checkout/create-session
@@ -22,8 +37,14 @@ const PORTAL_URL = process.env.PORTAL_URL || "https://gofixlibros.com/portal";
  * ------------------------------------------------------------------ */
 checkoutRouter.post("/create-session", requireAuth, async (req, res, next) => {
   try {
-    if (!process.env.STRIPE_SECRET_KEY) {
-      return res.status(500).json({ message: "Stripe no configurado. Falta STRIPE_SECRET_KEY." });
+    let stripe;
+    try {
+      stripe = getStripe();
+    } catch (e) {
+      if (e.code === "STRIPE_NOT_CONFIGURED") {
+        return res.status(500).json({ message: "Stripe no configurado. Falta STRIPE_SECRET_KEY." });
+      }
+      throw e;
     }
 
     const user = await User.findByPk(req.user.id);
@@ -35,6 +56,8 @@ checkoutRouter.post("/create-session", requireAuth, async (req, res, next) => {
     if (existing) {
       return res.status(409).json({ message: "Ya tienes acceso al Sistema Completo.", purchase: existing });
     }
+
+    const PORTAL_URL = portalUrl();
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
@@ -96,13 +119,15 @@ webhookRouter.post("/", async (req, res) => {
   let event;
   try {
     if (secret) {
+      // Verificamos la firma con la instancia perezosa
+      const stripe = getStripe();
       event = stripe.webhooks.constructEvent(req.body, sig, secret);
     } else {
       // Modo dev sin secret: aceptamos el body como JSON. NUNCA usar así en prod.
       event = JSON.parse(req.body.toString("utf8"));
     }
   } catch (err) {
-    console.error("[stripe webhook] firma inválida:", err.message);
+    console.error("[stripe webhook] firma inválida o Stripe no configurado:", err.message);
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 

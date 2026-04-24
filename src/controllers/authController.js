@@ -102,6 +102,63 @@ export async function login(req, res, next) {
   }
 }
 
+export const signupSchema = z.object({
+  body: z.object({
+    name: z.string().min(2),
+    email: z.string().email(),
+    password: z.string().min(8),
+  }),
+  params: z.object({}).default({}),
+  query: z.object({}).default({}),
+});
+
+/* Registro público — portal gofixlibros.
+ * Crea User con role="viewer" y devuelve el JWT de una vez. */
+export async function signup(req, res, next) {
+  try {
+    const existing = await findUserByEmail(req.body.email, { includePassword: true });
+    if (existing) {
+      throw new ApiError(409, "Ya existe una cuenta con ese correo.");
+    }
+
+    const user = await createUser({
+      name: req.body.name,
+      email: req.body.email,
+      passwordHash: req.body.password,
+      role: "viewer",
+      scopeKey: "gofixlibros",
+    });
+
+    const token = jwt.sign(
+      { sub: user.id, role: user.role, scopeKey: user.scopeKey },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRES_IN || "7d" }
+    );
+
+    await createAuditLog({
+      actorId: user.id,
+      actorEmail: user.email,
+      action: "signup",
+      entityType: "user",
+      entityId: user.id,
+      metadata: { source: "gofixlibros-portal" },
+    });
+
+    res.status(201).json({
+      token,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        scopeKey: user.scopeKey,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 export async function me(req, res) {
   res.json({ user: req.user });
 }

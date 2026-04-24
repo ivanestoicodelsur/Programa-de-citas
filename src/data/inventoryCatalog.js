@@ -1,82 +1,165 @@
 const inventoryCatalog = [
+  // ─── APPLE IPHONE 16 SERIES ───
   {
-    brand: "Samsung",
-    model: "Galaxy S24 Ultra",
-    series: "Galaxy S",
-    deviceType: "smartphone",
-    releaseYear: 2024,
+    brand: "Apple", model: "iPhone 16 Pro Max", series: "iPhone 16", deviceType: "smartphone", releaseYear: 2024,
     parts: [
-      { name: "Pantalla Dynamic AMOLED 2X", type: "AMOLED", quality: "Aftermarket", cost: 210, sale: 349.99, stock: 6 },
-      { name: "Batería", type: "Li-Ion", quality: "OEM", cost: 22, sale: 89.99, stock: 18 },
-      { name: "Charging Port", type: "USB-C", quality: "Genérica", cost: 12, sale: 79.99, stock: 20 },
+      { name: "Pantalla OLED (OEM)", type: "OLED", quality: "Original", cost: 320, sale: 499, stock: 5 },
+      { name: "Pantalla OLED (Copy)", type: "OLED", quality: "Aftermarket", cost: 180, sale: 299, stock: 3 },
+      { name: "Batería", type: "Li-Ion", quality: "Original", cost: 45, sale: 119, stock: 10 },
+      { name: "Vidrio Trasero", type: "Glass", quality: "Aftermarket", cost: 60, sale: 149, stock: 5 },
     ],
   },
   {
-    brand: "Samsung",
-    model: "Galaxy A54",
-    series: "Galaxy A",
-    deviceType: "smartphone",
-    releaseYear: 2023,
+    brand: "Apple", model: "iPhone 16 Pro", series: "iPhone 16", deviceType: "smartphone", releaseYear: 2024,
     parts: [
-      { name: "Pantalla Super AMOLED", type: "AMOLED", quality: "Aftermarket", cost: 85, sale: 169.99, stock: 10 },
-      { name: "Batería", type: "Li-Ion", quality: "Genérica", cost: 14, sale: 59.99, stock: 22 },
+      { name: "Pantalla OLED (OEM)", type: "OLED", quality: "Original", cost: 290, sale: 449, stock: 5 },
+      { name: "Batería", type: "Li-Ion", quality: "Original", cost: 40, sale: 109, stock: 8 },
     ],
   },
   {
-    brand: "Apple",
-    model: "iPhone 14 Pro Max",
-    series: "iPhone 14",
-    deviceType: "smartphone",
-    releaseYear: 2022,
+    brand: "Apple", model: "iPhone 16 Plus", series: "iPhone 16", deviceType: "smartphone", releaseYear: 2024,
     parts: [
-      { name: "Pantalla OLED", type: "OLED", quality: "Aftermarket", cost: 280, sale: 450, stock: 4 },
-      { name: "Batería", type: "Li-Ion", quality: "OEM", cost: 25, sale: 89.99, stock: 15 },
-      { name: "Flex de carga", type: "Lightning", quality: "Original", cost: 30, sale: 119.99, stock: 7 },
+      { name: "Pantalla OLED", type: "OLED", quality: "Original", cost: 250, sale: 399, stock: 4 },
+      { name: "Batería", type: "Li-Ion", quality: "Original", cost: 35, sale: 99, stock: 7 },
     ],
   },
   {
-    brand: "Apple",
-    model: "iPhone 13",
-    series: "iPhone 13",
-    deviceType: "smartphone",
-    releaseYear: 2021,
+    brand: "Apple", model: "iPhone 16", series: "iPhone 16", deviceType: "smartphone", releaseYear: 2024,
     parts: [
-      { name: "Pantalla OLED", type: "OLED", quality: "Aftermarket", cost: 180, sale: 299.99, stock: 6 },
-      { name: "Batería", type: "Li-Ion", quality: "OEM", cost: 20, sale: 79.99, stock: 14 },
-      { name: "Cámara trasera", type: "Dual Camera", quality: "Original", cost: 95, sale: 189.99, stock: 3 },
+      { name: "Pantalla OLED", type: "OLED", quality: "Original", cost: 220, sale: 349, stock: 6 },
+      { name: "Batería", type: "Li-Ion", quality: "Original", cost: 35, sale: 99, stock: 10 },
     ],
   },
   {
-    brand: "Apple",
-    model: "iPad Pro 12.9 M2",
-    series: "iPad Pro",
-    deviceType: "tablet",
-    releaseYear: 2022,
+    brand: "Apple", model: "iPhone 16e", series: "iPhone 16", deviceType: "smartphone", releaseYear: 2024,
     parts: [
-      { name: "Pantalla Mini-LED", type: "Mini-LED", quality: "Aftermarket", cost: 380, sale: 550, stock: 2 },
-      { name: "Puerto de carga", type: "USB-C", quality: "Original", cost: 35, sale: 140, stock: 4 },
+      { name: "Pantalla OLED", type: "OLED", quality: "Aftermarket", cost: 150, sale: 249, stock: 5 },
+      { name: "Batería", type: "Li-Ion", quality: "OEM", cost: 30, sale: 89, stock: 10 },
+    ],
+  },
+
+  // ─── APPLE IPHONE 17 SERIES (PROYECTADO) ───
+  {
+    brand: "Apple", model: "iPhone 17 Pro Max", series: "iPhone 17", deviceType: "smartphone", releaseYear: 2025,
+    parts: [
+      { name: "Pantalla OLED (OEM)", type: "OLED", quality: "Original", cost: 350, sale: 549, stock: 2 },
+      { name: "Batería", type: "Li-Ion", quality: "Original", cost: 50, sale: 129, stock: 5 },
     ],
   },
   {
-    brand: "Apple",
-    model: "MacBook Pro 14 M3",
-    series: "MacBook Pro",
-    deviceType: "laptop",
-    releaseYear: 2023,
+    brand: "Apple", model: "iPhone 17 Air", series: "iPhone 17", deviceType: "smartphone", releaseYear: 2025,
     parts: [
-      { name: "Pantalla Liquid Retina XDR", type: "Liquid Retina", quality: "Aftermarket", cost: 750, sale: 900, stock: 1 },
-      { name: "Batería", type: "Li-Polymer", quality: "OEM", cost: 120, sale: 240, stock: 3 },
+      { name: "Pantalla OLED Ultra Slim", type: "OLED", quality: "Original", cost: 300, sale: 479, stock: 2 },
+      { name: "Batería", type: "Li-Ion", quality: "Original", cost: 45, sale: 119, stock: 5 },
     ],
   },
   {
-    brand: "Motorola",
-    model: "Moto G Power 2024",
-    series: "Moto G",
-    deviceType: "smartphone",
-    releaseYear: 2024,
+    brand: "Apple", model: "iPhone 17e", series: "iPhone 17", deviceType: "smartphone", releaseYear: 2025,
     parts: [
-      { name: "Pantalla FHD+ IPS", type: "IPS", quality: "Aftermarket", cost: 45, sale: 120, stock: 8 },
-      { name: "Batería", type: "Li-Ion", quality: "Genérica", cost: 11, sale: 49.99, stock: 16 },
+      { name: "Pantalla OLED", type: "OLED", quality: "Aftermarket", cost: 160, sale: 269, stock: 3 },
+      { name: "Batería", type: "Li-Ion", quality: "Original", cost: 35, sale: 95, stock: 5 },
+    ],
+  },
+
+  // ─── APPLE IPHONE 15 SERIES ───
+  {
+    brand: "Apple", model: "iPhone 15 Pro Max", series: "iPhone 15", deviceType: "smartphone", releaseYear: 2023,
+    parts: [
+      { name: "Pantalla OLED", type: "OLED", quality: "Original", cost: 260, sale: 399, stock: 6 },
+      { name: "Batería", type: "Li-Ion", quality: "Original", cost: 35, sale: 99, stock: 12 },
+      { name: "Puerto de Carga USB-C", type: "USB-C", quality: "Original", cost: 30, sale: 119, stock: 8 },
+    ],
+  },
+  {
+    brand: "Apple", model: "iPhone 15", series: "iPhone 15", deviceType: "smartphone", releaseYear: 2023,
+    parts: [
+      { name: "Pantalla OLED", type: "OLED", quality: "Original", cost: 180, sale: 299, stock: 8 },
+      { name: "Batería", type: "Li-Ion", quality: "Original", cost: 30, sale: 89, stock: 15 },
+    ],
+  },
+
+  // ─── APPLE IPHONE 14 SERIES ───
+  {
+    brand: "Apple", model: "iPhone 14 Pro Max", series: "iPhone 14", deviceType: "smartphone", releaseYear: 2022,
+    parts: [
+      { name: "Pantalla OLED", type: "OLED", quality: "Original", cost: 220, sale: 349, stock: 7 },
+      { name: "Batería", type: "Li-Ion", quality: "Original", cost: 25, sale: 85, stock: 20 },
+    ],
+  },
+  {
+    brand: "Apple", model: "iPhone 14", series: "iPhone 14", deviceType: "smartphone", releaseYear: 2022,
+    parts: [
+      { name: "Pantalla OLED", type: "OLED", quality: "Original", cost: 140, sale: 249, stock: 10 },
+      { name: "Batería", type: "Li-Ion", quality: "Original", cost: 22, sale: 79, stock: 25 },
+    ],
+  },
+
+  // ─── APPLE IPHONE 13 SERIES ───
+  {
+    brand: "Apple", model: "iPhone 13 Pro Max", series: "iPhone 13", deviceType: "smartphone", releaseYear: 2021,
+    parts: [
+      { name: "Pantalla OLED", type: "OLED", quality: "Original", cost: 190, sale: 299, stock: 5 },
+      { name: "Batería", type: "Li-Ion", quality: "Original", cost: 20, sale: 79, stock: 30 },
+    ],
+  },
+  {
+    brand: "Apple", model: "iPhone 13", series: "iPhone 13", deviceType: "smartphone", releaseYear: 2021,
+    parts: [
+      { name: "Pantalla OLED", type: "OLED", quality: "Original", cost: 110, sale: 199, stock: 15 },
+      { name: "Batería", type: "Li-Ion", quality: "Original", cost: 18, sale: 69, stock: 40 },
+    ],
+  },
+
+  // ─── APPLE IPHONE 12 SERIES ───
+  {
+    brand: "Apple", model: "iPhone 12 Pro Max", series: "iPhone 12", deviceType: "smartphone", releaseYear: 2020,
+    parts: [
+      { name: "Pantalla OLED", type: "OLED", quality: "Aftermarket", cost: 95, sale: 179, stock: 10 },
+      { name: "Batería", type: "Li-Ion", quality: "Original", cost: 18, sale: 69, stock: 35 },
+    ],
+  },
+  {
+    brand: "Apple", model: "iPhone 12", series: "iPhone 12", deviceType: "smartphone", releaseYear: 2020,
+    parts: [
+      { name: "Pantalla OLED", type: "OLED", quality: "Aftermarket", cost: 75, sale: 149, stock: 20 },
+      { name: "Batería", type: "Li-Ion", quality: "Original", cost: 15, sale: 65, stock: 50 },
+    ],
+  },
+
+  // ─── APPLE IPHONE 11 SERIES ───
+  {
+    brand: "Apple", model: "iPhone 11 Pro Max", series: "iPhone 11", deviceType: "smartphone", releaseYear: 2019,
+    parts: [
+      { name: "Pantalla OLED", type: "OLED", quality: "Aftermarket", cost: 70, sale: 139, stock: 12 },
+      { name: "Batería", type: "Li-Ion", quality: "Original", cost: 15, sale: 65, stock: 40 },
+    ],
+  },
+  {
+    brand: "Apple", model: "iPhone 11", series: "iPhone 11", deviceType: "smartphone", releaseYear: 2019,
+    parts: [
+      { name: "Pantalla LCD Premium", type: "LCD", quality: "Aftermarket", cost: 45, sale: 99, stock: 30 },
+      { name: "Batería", type: "Li-Ion", quality: "Original", cost: 12, sale: 59, stock: 60 },
+    ],
+  },
+
+  // ─── OTROS DISPOSITIVOS ───
+  {
+    brand: "Samsung", model: "Galaxy S24 Ultra", series: "Galaxy S", deviceType: "smartphone", releaseYear: 2024,
+    parts: [
+      { name: "Pantalla Dynamic AMOLED 2X", type: "AMOLED", quality: "Original", cost: 240, sale: 389, stock: 4 },
+      { name: "Batería", type: "Li-Ion", quality: "Original", cost: 25, sale: 89, stock: 10 },
+    ],
+  },
+  {
+    brand: "Samsung", model: "Galaxy S23 Ultra", series: "Galaxy S", deviceType: "smartphone", releaseYear: 2023,
+    parts: [
+      { name: "Pantalla Dynamic AMOLED 2X", type: "AMOLED", quality: "Original", cost: 210, sale: 329, stock: 6 },
+    ],
+  },
+  {
+    brand: "Apple", model: "iPad Pro 12.9 M2", series: "iPad Pro", deviceType: "tablet", releaseYear: 2022,
+    parts: [
+      { name: "Pantalla Mini-LED", type: "Mini-LED", quality: "Original", cost: 380, sale: 549, stock: 2 },
     ],
   },
 ];
@@ -126,14 +209,7 @@ function buildSku(device, part, index) {
 
 function inferEstimatedHours(partName, deviceType) {
   const lower = partName.toLowerCase();
-  if (lower.includes("pantalla")) {
-    return deviceType === "laptop" ? 4 : 2;
-  }
-  if (lower.includes("bater")) {
-    return deviceType === "laptop" ? 3 : 1;
-  }
-  if (lower.includes("camara") || lower.includes("cámara")) {
-    return 2;
-  }
+  if (lower.includes("pantalla")) return deviceType === "laptop" ? 4 : 2;
+  if (lower.includes("bater")) return deviceType === "laptop" ? 3 : 1;
   return 1;
 }

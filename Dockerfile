@@ -22,6 +22,9 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY src ./src
 COPY package.json ./
 
+# Copy private PDFs (seed para migrateEbooksToDB.js — tras migrar viven en DB)
+COPY private ./private
+
 # SQLite data directory (mount a volume here in EasyPanel)
 RUN mkdir -p data
 

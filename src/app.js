@@ -12,6 +12,11 @@ import inventoryRoutes from "./routes/inventoryRoutes.js";
 import landingRoutes from "./routes/landingRoutes.js";
 import chatRoutes from "./routes/chatRoutes.js";
 import assetRoutes from "./routes/assetRoutes.js";
+import googleWorkspaceRoutes from "./routes/googleWorkspaceRoutes.js";
+import bookRoutes from "./routes/bookRoutes.js";
+import leadRoutes from "./routes/leadRoutes.js";
+import { checkoutRouter as stripeCheckoutRoutes, webhookRouter as stripeWebhookRoutes } from "./routes/stripeRoutes.js";
+import dailyMessageRoutes from "./routes/dailyMessageRoutes.js";
 import { errorHandler, notFoundHandler } from "./middlewares/errorHandler.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -60,6 +65,10 @@ app.use(
     },
   })
 );
+// IMPORTANTE: Stripe webhook necesita el body CRUDO para validar la firma.
+// Lo montamos ANTES de express.json().
+app.use("/api/webhooks/stripe", express.raw({ type: "application/json" }), stripeWebhookRoutes);
+
 app.use(express.json({ limit: "1mb" }));
 app.use(morgan("dev"));
 
@@ -80,7 +89,12 @@ app.use("/api/auth", authRoutes);
 app.use("/api/documents", documentRoutes);
 app.use("/api/inventory", inventoryRoutes);
 app.use("/api/assets", assetRoutes);
+app.use("/api/books", bookRoutes);
+app.use("/api/leads", leadRoutes);
+app.use("/api/checkout", stripeCheckoutRoutes);
+app.use("/api/daily-message", dailyMessageRoutes);
 app.use("/api/integrations/google-sheets", googleSheetsRoutes);
+app.use("/api/integrations/google-workspace", googleWorkspaceRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

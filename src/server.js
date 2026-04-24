@@ -4,6 +4,7 @@ import { connectMongo } from "./config/mongo.js";
 import { setMongoMode, setSqlMode } from "./config/runtime.js";
 import { connectSql } from "./config/sql.js";
 import { seedAdminUser } from "./utils/seedAdmin.js";
+import { syncInventoryFromGoogleSheets } from "./services/googleSheetsService.js";
 
 const port = Number(process.env.PORT || 4000);
 
@@ -38,6 +39,36 @@ async function bootstrap() {
   });
 
   console.log(`API listening on http://localhost:${port}`);
+
+  // Auto-sync Google Sheets inventory in the background (non-blocking)
+  autoSyncGoogleSheets();
+}
+
+async function autoSyncGoogleSheets() {
+  const hasApiKey = Boolean(process.env.GOOGLE_SHEETS_API_KEY?.trim());
+  const hasServiceAccount = Boolean(
+    process.env.GOOGLE_SHEETS_CLIENT_EMAIL?.trim() &&
+    process.env.GOOGLE_SHEETS_PRIVATE_KEY?.trim()
+  );
+  const hasSheets = Boolean(
+    process.env.GOOGLE_SHEETS_SPREADSHEET_IDS?.trim() ||
+    process.env.GOOGLE_SHEETS_SPREADSHEET_ID?.trim()
+  );
+
+  if (!(hasApiKey || hasServiceAccount) || !hasSheets) {
+    return;
+  }
+
+  try {
+    const scope = process.env.SEED_ADMIN_SCOPE || "central";
+    console.log("Google Sheets auto-sync starting...");
+    const result = await syncInventoryFromGoogleSheets(scope, "system");
+    console.log(
+      `Google Sheets auto-sync complete: ${result.imported} imported, ${result.updated} updated, ${result.rows} rows from ${result.sheets.length} spreadsheets`
+    );
+  } catch (error) {
+    console.error("Google Sheets auto-sync failed:", error.message);
+  }
 }
 
 bootstrap().catch((error) => {

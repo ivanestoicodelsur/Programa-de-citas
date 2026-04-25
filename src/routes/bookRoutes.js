@@ -41,6 +41,11 @@ router.get("/", (_req, res) => {
  * ------------------------------------------------------------------ */
 router.get("/my", requireAuth, async (req, res, next) => {
   try {
+        // Admin y manager tienen acceso completo a todos los infoproductos
+        if (req.user.role === "admin" || req.user.role === "manager") {
+                const all = BOOKS.map(({ file, ...rest }) => rest);
+                return res.json({ books: all });
+        }
     const purchases = await Purchase.findAll({
       where: { userId: req.user.id, isActive: true },
     });

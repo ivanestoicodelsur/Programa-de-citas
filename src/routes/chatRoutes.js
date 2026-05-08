@@ -27,6 +27,13 @@ Información clave de GO FIX MIAMI:
 Responde siempre en español de forma amigable, concisa y profesional. Si el cliente quiere un precio exacto o agendar, anímalo a contactarnos por WhatsApp al +1 (786) 806-2197 o usar el cotizador en la página.`;
 
 router.post("/", async (req, res) => {
+  // Feature flag: set ENABLE_PUBLIC_AI_ASSISTANT=true in .env to re-activate
+  if (process.env.ENABLE_PUBLIC_AI_ASSISTANT !== "true") {
+    return res.status(403).json({
+      error: "El asistente IA no está disponible en este momento. Contáctanos por WhatsApp al +1 (786) 806-2197.",
+    });
+  }
+
   const { messages } = req.body;
 
   if (!Array.isArray(messages) || messages.length === 0) {

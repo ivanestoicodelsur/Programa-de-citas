@@ -22,6 +22,9 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY src ./src
 COPY package.json ./
 
+# Admin panel + shared JS helpers (static files served by Express)
+COPY public ./public
+
 # Copy private PDFs (seed para migrateEbooksToDB.js — tras migrar viven en DB)
 COPY private ./private
 

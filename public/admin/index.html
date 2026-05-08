@@ -487,7 +487,35 @@ tbody tr:hover td { background: rgba(255,255,255,0.025); }
   font-weight: 700;
   margin-bottom: 0.3rem;
 }
-.pack-card-sub { color: var(--muted); font-size: 0.88rem; margin-bottom: 1rem; }
+.pack-card-sub { color: var(--muted); font-size: 0.88rem; margin-bottom: 1.2rem; }
+.sessions-box {
+  background: rgba(201,169,97,0.06);
+  border: 1px solid rgba(201,169,97,0.2);
+  border-radius: calc(var(--radius) - 2px);
+  padding: 1.2rem 1.4rem;
+  margin-bottom: 1.4rem;
+}
+.sessions-box-header {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+}
+.sessions-box-intro {
+  font-size: 0.83rem;
+  color: var(--muted);
+  margin-bottom: 1rem;
+  line-height: 1.55;
+}
+.sessions-list--compact { gap: 0.75rem; }
+.sessions-list--compact .session-item { align-items: flex-start; }
+.sessions-list--compact .session-num {
+  min-width: 26px;
+  height: 26px;
+  font-size: 0.65rem;
+}
+.sessions-list--compact .session-name { font-size: 0.85rem; }
+.sessions-list--compact .session-desc { font-size: 0.78rem; }
 .pack-price {
   font-size: 2rem;
   font-weight: 800;
@@ -1067,12 +1095,44 @@ tbody tr:hover td { background: rgba(255,255,255,0.025); }
         </div>
 
         <!-- PACK SISTEMA COMPLETO -->
-        <div class="section-title">Pack Sistema Completo</div>
+        <div class="section-title">Sistema Completo · $100 USD</div>
         <div class="pack-card">
-          <div class="pack-card-label">Pack Único · Acceso Total</div>
+          <div class="pack-card-label">Sistema Completo · Precio Único · Acceso de por vida</div>
           <div class="pack-card-title">Sistema de Autonomía y Preparación ante el Ingeniero Social</div>
-          <div class="pack-card-sub">4 libros núcleo + 3 guías complementarias + mensajes diarios</div>
-          <div class="pack-price">$100 <span>USD · Pago único</span></div>
+          <div class="pack-card-sub">7 infoproductos · 3 llamadas 1:1 personalizadas · Mensajes diarios · Sin renovaciones</div>
+
+          <!-- 1:1 sessions breakdown inside the pack card -->
+          <div class="sessions-box">
+            <div class="sessions-box-header">
+              🎯 Incluido: 3 Llamadas 1:1 con Iván
+            </div>
+            <p class="sessions-box-intro">No es un libro más. Es un proceso de acompañamiento directo — secuencial, sin atajos, personalizado para tu situación.</p>
+            <ul class="sessions-list sessions-list--compact" role="list">
+              <li class="session-item">
+                <div class="session-num">01</div>
+                <div class="session-body">
+                  <div class="session-name">Observación</div>
+                  <div class="session-desc">Escucho tu historia, tus patrones y tus puntos de quiebre. Sin juicio. El objetivo: que te sientas comprendido y que yo pueda leer el contexto completo.</div>
+                </div>
+              </li>
+              <li class="session-item">
+                <div class="session-num">02</div>
+                <div class="session-body">
+                  <div class="session-name">Diagnóstico</div>
+                  <div class="session-desc">Con lo que emergió en la primera llamada, entrego un diagnóstico preciso: qué emociones te frenan, qué creencias limitan tu avance y cómo responde tu cognición al cambio.</div>
+                </div>
+              </li>
+              <li class="session-item">
+                <div class="session-num">03</div>
+                <div class="session-body">
+                  <div class="session-name">Retroalimentación</div>
+                  <div class="session-desc">La recomendación final e integrada. Tu reacción al diagnóstico revela el camino de cambio real. Solo es posible después de los dos pasos anteriores. Aquí cierras el ciclo.</div>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <div class="pack-price">$100 <span>USD · Pago único · Todo incluido</span></div>
         </div>
 
         <!-- INFOPRODUCTOS (sin cantidades de páginas) -->

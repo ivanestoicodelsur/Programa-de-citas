@@ -86,6 +86,11 @@ app.use("/uploads", express.static(path.join(__dirname, "../public/uploads")));
 
 // Admin panel + shared JS helpers (served as static HTML/CSS/JS)
 app.use("/admin", express.static(path.join(__dirname, "../public/admin")));
+// SPA catch-all: cualquier ruta /admin/* que no sea un archivo estático
+// (ej. /admin/login, /admin/crm) recibe el index.html para que el JS maneje el routing.
+app.get("/admin/*", (_req, res) => {
+  res.sendFile(path.join(__dirname, "../public/admin/index.html"));
+});
 app.use("/js", express.static(path.join(__dirname, "../public/js")));
 
 app.use("/api", landingRoutes);
@@ -102,5 +107,7 @@ app.use("/api/daily-message", dailyMessageRoutes);
 app.use("/api/integrations/google-sheets", googleSheetsRoutes);
 app.use("/api/integrations/google-workspace", googleWorkspaceRoutes);
 
-app.use(notFoundHandler);
+// 404 solo para rutas /api — el catch-all del admin y el SPA del frontend
+// (nginx) manejan el resto. Un 404 JSON global rompería cualquier ruta SPA.
+app.use("/api", notFoundHandler);
 app.use(errorHandler);

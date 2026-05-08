@@ -7,6 +7,70 @@ import { captureLead } from "../services/leadService.js";
 const router = express.Router();
 
 /* ------------------------------------------------------------------
+ * POST /api/leads/capture — fire-and-forget desde formularios y CTAs.
+ * Acepta: { name?, email?, phone?, source, channel, payload?, amount?, status? }
+ * Idempotencia: si el mismo email+source aparece en <60s, no duplica actividad.
+ * Siempre devuelve < 200ms para no bloquear al usuario.
+ * ------------------------------------------------------------------ */
+router.post("/capture", async (req, res, next) => {
+  try {
+    const {
+      name, email, phone, source = "other", channel,
+      payload, amount, status,
+    } = req.body || {};
+
+    if (!email && !phone) {
+      return res.status(400).json({ ok: false, message: "email o phone requerido" });
+    }
+
+    // Parsear "name" en firstName/lastName
+    let firstName, lastName;
+    if (name) {
+      const parts = String(name).trim().split(/\s+/);
+      firstName = parts[0];
+      lastName  = parts.slice(1).join(" ") || null;
+    }
+
+    // Idempotencia: ¿ya capturamos este email+source en los últimos 60 s?
+    if (email) {
+      const cutoff = new Date(Date.now() - 60_000);
+      const recentActivity = await LeadActivity.findOne({
+        include: [{
+          model: Lead,
+          as: "lead",
+          where: { email },
+          required: true,
+        }],
+        where: {
+          source,
+          createdAt: { [Op.gte]: cutoff },
+        },
+      });
+      if (recentActivity) {
+        return res.json({ ok: true, id: recentActivity.leadId, duplicate: true });
+      }
+    }
+
+    const lead = await captureLead({
+      source,
+      channel: channel || "gofix",
+      email:     email   || null,
+      phone:     phone   || null,
+      firstName: firstName || null,
+      lastName:  lastName  || null,
+      metadata:  payload  || {},
+      amount,
+    });
+
+    if (status) {
+      await lead.update({ status });
+    }
+
+    res.json({ ok: true, id: lead.id });
+  } catch (err) { next(err); }
+});
+
+/* ------------------------------------------------------------------
  * POST /api/leads — captura pública (newsletter, portal, chat, etc)
  * Nunca pierde datos. Si source falta, se usa "other" y se marca en tag.
  * ------------------------------------------------------------------ */

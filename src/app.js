@@ -57,7 +57,7 @@ app.use(
         imgSrc: ["'self'", "data:", "https:", "http:"],
         styleSrc: ["'self'", "https:", "'unsafe-inline'"],
         fontSrc: ["'self'", "https:", "data:"],
-        scriptSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'"],
         objectSrc: ["'none'"],
         baseUri: ["'self'"],
         formAction: ["'self'"],
@@ -86,8 +86,10 @@ app.use("/uploads", express.static(path.join(__dirname, "../public/uploads")));
 
 // Admin panel + shared JS helpers (served as static HTML/CSS/JS)
 app.use("/admin", express.static(path.join(__dirname, "../public/admin")));
-// Regex catch-all: Express 4 glob (*) is unreliable; regex guarantees /admin, /admin/, /admin/login all resolve to index.html.
+// Regex catch-all: no-store prevents stale HTML from being served from browser cache.
 app.get(/^\/admin(\/.*)?$/, (_req, res) => {
+  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
+  res.setHeader("Pragma", "no-cache");
   res.sendFile(path.join(__dirname, "../public/admin/index.html"));
 });
 app.use("/js", express.static(path.join(__dirname, "../public/js")));

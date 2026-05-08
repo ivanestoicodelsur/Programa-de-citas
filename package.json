@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "node --watch-path=./src --watch src/server.js",
     "start": "node src/server.js",
-    "lint": "node --check src/server.js"
+    "lint": "node --check src/server.js",
+    "migrate": "node -e \"import('./src/config/sql.js').then(m=>m.connectSql()).then(()=>{console.log('[migrate] done');process.exit(0)}).catch(e=>{console.error(e);process.exit(1)})\"",
+    "seed:admin": "node -e \"import('./src/config/env.js').then(()=>import('./src/config/sql.js')).then(m=>m.connectSql()).then(()=>import('./src/utils/seedAdmin.js')).then(m=>m.seedAdminUser()).then(()=>process.exit(0)).catch(e=>{console.error(e);process.exit(1)})\""
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.79.0",

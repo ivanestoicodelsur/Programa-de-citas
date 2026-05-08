@@ -13,6 +13,7 @@ export async function seedAdminUser() {
 
   const existingUser = await findUserByEmail(email, { includePassword: true });
   if (existingUser) {
+    console.log(`[seed] admin already exists: ${email}`);
     await seedSqlInventory(existingUser);
     await seedMemoryData({ admin: existingUser });
     return;
@@ -29,7 +30,7 @@ export async function seedAdminUser() {
   await seedSqlInventory(admin);
   await seedMemoryData({ admin });
 
-  console.log(`Seeded admin user: ${email}`);
+  console.log(`[seed] admin user created: ${email}`);
 }
 
 async function seedSqlInventory(admin) {

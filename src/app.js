@@ -86,9 +86,8 @@ app.use("/uploads", express.static(path.join(__dirname, "../public/uploads")));
 
 // Admin panel + shared JS helpers (served as static HTML/CSS/JS)
 app.use("/admin", express.static(path.join(__dirname, "../public/admin")));
-// SPA catch-all: cualquier ruta /admin/* que no sea un archivo estático
-// (ej. /admin/login, /admin/crm) recibe el index.html para que el JS maneje el routing.
-app.get("/admin/*", (_req, res) => {
+// Regex catch-all: Express 4 glob (*) is unreliable; regex guarantees /admin, /admin/, /admin/login all resolve to index.html.
+app.get(/^\/admin(\/.*)?$/, (_req, res) => {
   res.sendFile(path.join(__dirname, "../public/admin/index.html"));
 });
 app.use("/js", express.static(path.join(__dirname, "../public/js")));

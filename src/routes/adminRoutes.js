@@ -1,10 +1,10 @@
 import express from "express";
-import { requireAuth, requireRoles } from "../middlewares/auth.js";
 import { sequelize } from "../config/sql.js";
 
 const router = express.Router();
 
-router.get("/health", requireAuth, requireRoles("admin", "manager"), async (_req, res) => {
+// Public — no auth required so external monitoring and the admin banner can reach it.
+router.get("/health", async (_req, res) => {
   let dbStatus = "unknown";
   try {
     await sequelize.authenticate();

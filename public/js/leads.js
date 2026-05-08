@@ -1,51 +1,41 @@
 /**
- * captureLead — fire-and-forget desde cualquier formulario o CTA.
+ * leads.js — fire-and-forget desde formularios y CTAs.
+ * Incluir en cualquier página:
+ *   <script src="/js/leads.js"></script>
  *
- * Usos:
- *   captureLead({ email, source: 'gofix_repair_form', channel: 'form' })
- *   captureLead({ phone, source: 'whatsapp_click',    channel: 'whatsapp', payload: { page } })
- *   captureLead({ email, source: 'newsletter_mindsetbuilder', channel: 'newsletter' })
- *
- * Garantías:
- *   - keepalive: true  → sobrevive si el usuario navega a otra página
- *   - Nunca lanza un error al caller
- *   - No bloquea el flujo del usuario (fire-and-forget)
+ * Luego usar:
+ *   window.captureLead({ email, source, channel, ... })
+ *   window.trackWhatsApp({ page: '/cotizar' })
  */
-function captureLead(data) {
+
+window.captureLead = function (data) {
   try {
-    const body = JSON.stringify(data);
-    if (navigator.sendBeacon) {
-      const blob = new Blob([body], { type: 'application/json' });
-      navigator.sendBeacon('/api/leads/capture', blob);
-    } else {
-      fetch('/api/leads/capture', {
-        method:    'POST',
-        headers:   { 'Content-Type': 'application/json' },
-        body:      body,
-        keepalive: true,
-      }).catch(function () {});
-    }
+    fetch('/api/leads/capture', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+      keepalive: true,
+    }).catch(function () {});
   } catch (e) {}
-}
+};
+
+window.trackWhatsApp = function (payload) {
+  window.captureLead({ source: 'whatsapp_click', channel: 'whatsapp', payload: payload });
+};
 
 /**
- * trackWhatsApp — engancha todos los links de WhatsApp de la página
- * y registra un evento anónimo con la página de origen.
- *
- * Llamar una vez al cargar el DOM:
- *   trackWhatsApp()
+ * Auto-hook: engancha todos los links wa.me de la página al cargar.
+ * Llamar una vez al final del DOM:   window.initWhatsAppTracking()
  */
-function trackWhatsApp(extraData) {
+window.initWhatsAppTracking = function (extraData) {
   document.querySelectorAll('a[href^="https://wa.me"], a[href^="https://api.whatsapp.com"]')
     .forEach(function (a) {
-      if (a._trackWA) return;
-      a._trackWA = true;
+      if (a._tracked) return;
+      a._tracked = true;
       a.addEventListener('click', function () {
-        captureLead(Object.assign({
-          source:  'whatsapp_click',
-          channel: 'whatsapp',
-          payload: { url: a.href, page: window.location.pathname },
-        }, extraData || {}));
+        window.trackWhatsApp(
+          Object.assign({ url: a.href, page: window.location.pathname }, extraData || {})
+        );
       });
     });
-}
+};

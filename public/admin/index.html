@@ -1,0 +1,1581 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GO FIX MIAMI · Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0B0F14;
+  --surface:  #11161D;
+  --border:   #1C2330;
+  --accent:   #F5B400;
+  --text:     #E6E8EC;
+  --muted:    #8892A0;
+  --danger:   #EF4444;
+  --success:  #22C55E;
+  --radius:   16px;
+  --sidebar-w: 220px;
+  --sidebar-collapsed: 64px;
+  --transition: 0.22s ease;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── LOGIN ─────────────────────────────────────────────── */
+#login-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 1.5rem;
+}
+.login-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2.5rem 2rem;
+  width: 100%;
+  max-width: 380px;
+}
+.login-logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: -0.5px;
+  margin-bottom: 0.25rem;
+}
+.login-sub {
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin-bottom: 2rem;
+}
+.field { margin-bottom: 1rem; }
+.field label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--muted);
+  margin-bottom: 0.4rem;
+}
+.field input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.65rem 0.9rem;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color var(--transition);
+}
+.field input:focus { border-color: var(--accent); }
+.btn-primary {
+  width: 100%;
+  background: var(--accent);
+  color: #000;
+  font-weight: 700;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 10px;
+  padding: 0.75rem;
+  cursor: pointer;
+  font-family: inherit;
+  transition: opacity var(--transition);
+}
+.btn-primary:hover { opacity: 0.85; }
+.login-error {
+  background: rgba(239,68,68,0.15);
+  border: 1px solid var(--danger);
+  border-radius: 8px;
+  padding: 0.65rem 0.9rem;
+  font-size: 0.82rem;
+  color: #fca5a5;
+  margin-bottom: 1rem;
+  display: none;
+}
+
+/* ── APP LAYOUT ─────────────────────────────────────────── */
+#app { display: flex; min-height: 100vh; }
+
+/* ── SIDEBAR ─────────────────────────────────────────────── */
+#sidebar {
+  width: var(--sidebar-w);
+  min-height: 100vh;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  transition: width var(--transition);
+  overflow: hidden;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+#sidebar.collapsed { width: var(--sidebar-collapsed); }
+
+.sidebar-brand {
+  padding: 1.2rem 1rem 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+  min-height: 60px;
+}
+.brand-icon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+  width: 36px;
+  text-align: center;
+}
+.brand-text {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--accent);
+  overflow: hidden;
+  transition: opacity var(--transition), width var(--transition);
+}
+#sidebar.collapsed .brand-text { opacity: 0; width: 0; }
+
+.sidebar-toggle {
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  white-space: nowrap;
+  transition: color var(--transition);
+}
+.sidebar-toggle:hover { color: var(--text); }
+
+nav.sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0.5rem 0;
+}
+nav.sidebar-nav::-webkit-scrollbar { width: 4px; }
+nav.sidebar-nav::-webkit-scrollbar-track { background: transparent; }
+nav.sidebar-nav::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 1rem;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  transition: color var(--transition), background var(--transition);
+  border-radius: 0;
+}
+.nav-item:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-item.active { color: var(--accent); background: rgba(245,180,0,0.08); }
+
+.nav-icon {
+  font-size: 1.1rem;
+  width: 28px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.nav-label {
+  overflow: hidden;
+  transition: opacity var(--transition), width var(--transition);
+}
+#sidebar.collapsed .nav-label { opacity: 0; width: 0; }
+
+.sidebar-footer {
+  border-top: 1px solid var(--border);
+  padding: 0.75rem 0;
+}
+
+/* ── MAIN ─────────────────────────────────────────────────── */
+#main-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* ── TOPBAR ───────────────────────────────────────────────── */
+#top-bar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 1.5rem;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.top-bar-left { display: flex; align-items: center; gap: 1rem; }
+.top-greeting { font-size: 0.88rem; color: var(--muted); }
+.top-greeting strong { color: var(--text); }
+.top-right { display: flex; align-items: center; gap: 0.75rem; }
+.status-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 0.3rem 0.75rem;
+  border-radius: 20px;
+  background: rgba(34,197,94,0.1);
+  color: var(--success);
+  border: 1px solid rgba(34,197,94,0.2);
+}
+.status-chip.error { background: rgba(239,68,68,0.1); color: #fca5a5; border-color: rgba(239,68,68,0.2); }
+.status-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: pulse 2s ease infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+.btn-logout {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: 8px;
+  padding: 0.3rem 0.75rem;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.8rem;
+  transition: color var(--transition), border-color var(--transition);
+}
+.btn-logout:hover { color: var(--text); border-color: var(--muted); }
+
+/* ── CONTENT ──────────────────────────────────────────────── */
+#content { flex: 1; padding: 2rem 1.5rem; }
+
+.page { display: none; }
+.page.active { display: block; }
+
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+}
+.page-sub {
+  color: var(--muted);
+  font-size: 0.88rem;
+  margin-bottom: 2rem;
+}
+
+/* ── HUB CARDS ────────────────────────────────────────────── */
+.hub-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.25rem;
+  margin-top: 0.5rem;
+}
+.hub-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.75rem 1.5rem 1.5rem;
+  cursor: pointer;
+  transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.hub-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+.hub-card-icon { font-size: 2.5rem; }
+.hub-card-title { font-size: 1.05rem; font-weight: 700; }
+.hub-card-desc { font-size: 0.83rem; color: var(--muted); line-height: 1.5; flex: 1; }
+.hub-card-meta { font-size: 0.78rem; color: var(--accent); font-weight: 600; }
+.hub-card-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--accent);
+  margin-top: 0.4rem;
+}
+
+/* ── TABLES ───────────────────────────────────────────────── */
+.table-wrapper {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.table-toolbar {
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--border);
+}
+.table-toolbar input, .table-toolbar select {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.45rem 0.75rem;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.82rem;
+  outline: none;
+}
+.table-toolbar input:focus, .table-toolbar select:focus { border-color: var(--accent); }
+.btn-sm {
+  background: var(--accent);
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+}
+.btn-sm:hover { opacity: 0.85; }
+.btn-ghost {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: 8px;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.82rem;
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+}
+.btn-ghost:hover { color: var(--text); border-color: var(--muted); }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.83rem;
+}
+thead th {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+tbody td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgba(28,35,48,0.6);
+  vertical-align: middle;
+}
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover td { background: rgba(255,255,255,0.025); }
+
+.badge {
+  display: inline-block;
+  padding: 0.2rem 0.55rem;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+.badge-green  { background: rgba(34,197,94,0.15);  color: #86efac; }
+.badge-yellow { background: rgba(245,180,0,0.15);   color: var(--accent); }
+.badge-blue   { background: rgba(96,165,250,0.15);  color: #93c5fd; }
+.badge-red    { background: rgba(239,68,68,0.15);   color: #fca5a5; }
+.badge-gray   { background: rgba(136,146,160,0.15); color: var(--muted); }
+
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--muted);
+}
+.empty-state p { margin-top: 0.5rem; font-size: 0.85rem; }
+
+/* ── PROFILE / INFOPRODUCTS ───────────────────────────────── */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
+}
+.product-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.product-card-cover {
+  height: 8px;
+  background: linear-gradient(90deg, var(--accent), #ff8c00);
+}
+.product-card-body { padding: 1.25rem; }
+.product-card-badge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: rgba(245,180,0,0.12);
+  color: var(--accent);
+  margin-bottom: 0.6rem;
+}
+.product-card-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.35;
+  margin-bottom: 0.3rem;
+}
+.product-card-sub {
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+/* Pack destacado */
+.pack-card {
+  background: linear-gradient(135deg, rgba(245,180,0,0.07), rgba(245,180,0,0.02));
+  border: 1px solid rgba(245,180,0,0.3);
+  border-radius: var(--radius);
+  padding: 1.75rem;
+  margin-bottom: 2rem;
+}
+.pack-card-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  margin-bottom: 0.4rem;
+}
+.pack-card-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+.pack-card-sub { color: var(--muted); font-size: 0.88rem; margin-bottom: 1rem; }
+.pack-price {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--accent);
+}
+.pack-price span { font-size: 0.9rem; font-weight: 500; color: var(--muted); }
+
+/* 1:1 service card */
+.service-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.75rem;
+  margin-bottom: 2rem;
+}
+.service-card-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #93c5fd;
+  margin-bottom: 0.5rem;
+}
+.service-card-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+.service-card-sub { color: var(--muted); font-size: 0.88rem; margin-bottom: 1.25rem; }
+.sessions-list { list-style: none; display: flex; flex-direction: column; gap: 1rem; }
+.session-item {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+.session-num {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: rgba(96,165,250,0.12);
+  border: 1px solid rgba(96,165,250,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #93c5fd;
+  flex-shrink: 0;
+}
+.session-body {}
+.session-name {
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin-bottom: 0.2rem;
+}
+.session-label {
+  font-size: 0.75rem;
+  color: var(--muted);
+  font-weight: 500;
+  margin-bottom: 0.3rem;
+}
+.session-desc { font-size: 0.83rem; color: var(--muted); line-height: 1.5; }
+.service-process {
+  background: rgba(96,165,250,0.05);
+  border: 1px solid rgba(96,165,250,0.1);
+  border-radius: 10px;
+  padding: 0.9rem 1rem;
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.55;
+  margin-top: 1.25rem;
+  font-style: italic;
+}
+.areas-list {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+.area-tag {
+  background: rgba(96,165,250,0.1);
+  color: #93c5fd;
+  border: 1px solid rgba(96,165,250,0.15);
+  border-radius: 20px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* ── SECTION TITLES ─────────────────────────────────────── */
+.section-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ── STATS BAR ──────────────────────────────────────────── */
+.stats-bar {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+.stat-chip {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.75rem 1.25rem;
+  min-width: 100px;
+}
+.stat-chip-val {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 0.2rem;
+}
+.stat-chip-label { font-size: 0.75rem; color: var(--muted); }
+
+/* ── FOOTER ─────────────────────────────────────────────── */
+#app-footer {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 1.5rem;
+}
+.newsletter-bar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.newsletter-bar p {
+  font-size: 0.85rem;
+  color: var(--muted);
+  flex: 1;
+  min-width: 160px;
+}
+.newsletter-bar p strong { color: var(--text); }
+.newsletter-form {
+  display: flex;
+  gap: 0.5rem;
+  flex: 2;
+  min-width: 200px;
+  max-width: 420px;
+}
+.newsletter-form input {
+  flex: 1;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.55rem 0.85rem;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.85rem;
+  outline: none;
+}
+.newsletter-form input:focus { border-color: var(--accent); }
+.newsletter-msg { font-size: 0.8rem; color: var(--success); display: none; }
+
+/* ── COMING SOON ─────────────────────────────────────────── */
+.coming-soon {
+  background: var(--surface);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 3rem 2rem;
+  text-align: center;
+  color: var(--muted);
+}
+.coming-soon h3 { color: var(--text); margin-bottom: 0.5rem; }
+
+/* ── LOADING ─────────────────────────────────────────────── */
+.spinner {
+  width: 32px; height: 32px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 2rem auto;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── RESPONSIVE ─────────────────────────────────────────── */
+@media (max-width: 640px) {
+  #sidebar { position: fixed; z-index: 100; height: 100%; }
+  #sidebar:not(.collapsed) ~ #main-wrapper::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 99;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════
+     LOGIN SCREEN
+════════════════════════════════════════ -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">GO FIX MIAMI</div>
+    <div class="login-sub">Panel de Administración</div>
+    <div class="login-error" id="login-error"></div>
+    <form id="login-form">
+      <div class="field">
+        <label for="login-email">Email</label>
+        <input type="email" id="login-email" placeholder="admin@gofix.com" required autocomplete="email">
+      </div>
+      <div class="field">
+        <label for="login-pass">Contraseña</label>
+        <input type="password" id="login-pass" placeholder="••••••••" required autocomplete="current-password">
+      </div>
+      <button type="submit" class="btn-primary" id="login-btn">Entrar</button>
+    </form>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     APP
+════════════════════════════════════════ -->
+<div id="app" style="display:none">
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <div class="sidebar-brand">
+      <span class="brand-icon">⚡</span>
+      <span class="brand-text">GO FIX MIAMI</span>
+    </div>
+
+    <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Colapsar menú">
+      <span class="nav-icon">☰</span>
+      <span class="nav-label">Menú</span>
+    </button>
+
+    <nav class="sidebar-nav" role="navigation" aria-label="Navegación principal">
+      <button class="nav-item active" data-page="inicio" aria-label="Inicio">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-label">Inicio</span>
+      </button>
+      <button class="nav-item" data-page="crm" aria-label="CRM y Leads">
+        <span class="nav-icon">👥</span>
+        <span class="nav-label">CRM / Leads</span>
+      </button>
+      <button class="nav-item" data-page="gofix" aria-label="GoFix Reparaciones">
+        <span class="nav-icon">🛠️</span>
+        <span class="nav-label">GoFix Reparaciones</span>
+      </button>
+      <button class="nav-item" data-page="web" aria-label="Diseño Web">
+        <span class="nav-icon">🌐</span>
+        <span class="nav-label">Diseño Web</span>
+      </button>
+      <button class="nav-item" data-page="mindset" aria-label="MindsetBuilder">
+        <span class="nav-icon">🧠</span>
+        <span class="nav-label">MindsetBuilder ($100)</span>
+      </button>
+      <button class="nav-item" data-page="comunidad" aria-label="Comunidad Portal VIP">
+        <span class="nav-icon">📰</span>
+        <span class="nav-label">Comunidad / Portal VIP</span>
+      </button>
+      <button class="nav-item" data-page="ventas" aria-label="Ventas">
+        <span class="nav-icon">💰</span>
+        <span class="nav-label">Ventas</span>
+      </button>
+      <button class="nav-item" data-page="inventario" aria-label="Biblioteca e Inventario">
+        <span class="nav-icon">📚</span>
+        <span class="nav-label">Biblioteca / Inventario</span>
+      </button>
+      <button class="nav-item" data-page="databases" aria-label="Base de Datos">
+        <span class="nav-icon">🗄️</span>
+        <span class="nav-label">Base de Datos</span>
+      </button>
+      <button class="nav-item" data-page="perfil" aria-label="Mi perfil e historia">
+        <span class="nav-icon">👤</span>
+        <span class="nav-label">Mi Perfil / Historia</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="nav-item" id="logout-btn" aria-label="Cerrar sesión">
+        <span class="nav-icon">🚪</span>
+        <span class="nav-label">Cerrar sesión</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN WRAPPER -->
+  <div id="main-wrapper">
+
+    <!-- TOP BAR -->
+    <header id="top-bar" role="banner">
+      <div class="top-bar-left">
+        <span class="top-greeting">
+          Hola, <strong id="user-name">Admin</strong> · <span id="miami-clock"></span>
+        </span>
+      </div>
+      <div class="top-right">
+        <div class="status-chip" id="health-chip" role="status" aria-live="polite">
+          <span class="status-dot"></span>
+          <span id="health-label">Verificando…</span>
+        </div>
+        <button class="btn-logout" id="logout-top" aria-label="Cerrar sesión">Salir</button>
+      </div>
+    </header>
+
+    <!-- CONTENT AREA -->
+    <main id="content" role="main">
+
+      <!-- ── INICIO (HUB) ── -->
+      <section id="page-inicio" class="page active">
+        <div class="page-title">Panel de control</div>
+        <div class="page-sub">Selecciona un sistema para comenzar.</div>
+        <div class="hub-grid">
+
+          <div class="hub-card" data-goto="gofix" tabindex="0" role="button" aria-label="Abrir GoFix Reparaciones">
+            <div class="hub-card-icon">🛠️</div>
+            <div class="hub-card-title">GoFix Reparaciones</div>
+            <div class="hub-card-desc">Gestión de inventario de piezas y servicios de reparación. Catálogo completo de dispositivos.</div>
+            <div class="hub-card-meta" id="hub-inventory-meta">Cargando…</div>
+            <div class="hub-card-cta">Abrir →</div>
+          </div>
+
+          <div class="hub-card" data-goto="crm" tabindex="0" role="button" aria-label="Abrir CRM">
+            <div class="hub-card-icon">👥</div>
+            <div class="hub-card-title">CRM &amp; Leads</div>
+            <div class="hub-card-desc">Contactos capturados desde cotizaciones, WhatsApp, newsletter y checkout.</div>
+            <div class="hub-card-meta" id="hub-leads-meta">Cargando…</div>
+            <div class="hub-card-cta">Abrir →</div>
+          </div>
+
+          <div class="hub-card" data-goto="web" tabindex="0" role="button" aria-label="Abrir Diseño Web">
+            <div class="hub-card-icon">🌐</div>
+            <div class="hub-card-title">Diseño Web</div>
+            <div class="hub-card-desc">Gestión de proyectos y clientes del servicio de diseño y desarrollo web.</div>
+            <div class="hub-card-cta">Abrir →</div>
+          </div>
+
+          <div class="hub-card" data-goto="mindset" tabindex="0" role="button" aria-label="Abrir MindsetBuilder">
+            <div class="hub-card-icon">🧠</div>
+            <div class="hub-card-title">MindsetBuilder</div>
+            <div class="hub-card-desc">Sistema de autonomía y preparación. Pack completo · 7 infoproductos + mensajes diarios.</div>
+            <div class="hub-card-meta">$100 USD · Pack único</div>
+            <div class="hub-card-cta">Abrir →</div>
+          </div>
+
+          <div class="hub-card" data-goto="perfil" tabindex="0" role="button" aria-label="Abrir Mi Perfil">
+            <div class="hub-card-icon">👤</div>
+            <div class="hub-card-title">Mi Perfil / Historia</div>
+            <div class="hub-card-desc">Infoproductos, servicios 1 a 1 y configuración del perfil público.</div>
+            <div class="hub-card-cta">Abrir →</div>
+          </div>
+
+          <div class="hub-card" data-goto="databases" tabindex="0" role="button" aria-label="Abrir Base de Datos">
+            <div class="hub-card-icon">🗄️</div>
+            <div class="hub-card-title">Base de Datos</div>
+            <div class="hub-card-desc">Estado de SQLite y MongoDB. Acceso a tablas: Clientes, Inventario, Documentos, Usuarios.</div>
+            <div class="hub-card-cta">Abrir →</div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ── CRM ── -->
+      <section id="page-crm" class="page">
+        <div class="page-title">CRM &amp; Leads</div>
+        <div class="page-sub">Todos los contactos capturados desde los formularios, WhatsApp, newsletter y checkout.</div>
+
+        <div class="stats-bar" id="crm-stats"></div>
+
+        <div class="table-wrapper">
+          <div class="table-toolbar">
+            <input type="search" id="crm-search" placeholder="Buscar email, teléfono…" aria-label="Buscar leads">
+            <select id="crm-source" aria-label="Filtrar por origen">
+              <option value="">Todos los orígenes</option>
+              <option value="gofix_repair_form">GoFix Formulario</option>
+              <option value="web_design_form">Diseño Web</option>
+              <option value="newsletter_mindsetbuilder">Newsletter</option>
+              <option value="whatsapp_click">WhatsApp Click</option>
+              <option value="community_purchase_100">Compra Comunidad</option>
+              <option value="checkout-started">Checkout Iniciado</option>
+              <option value="book-purchase">Compra Libro</option>
+            </select>
+            <select id="crm-status" aria-label="Filtrar por estado">
+              <option value="">Todos los estados</option>
+              <option value="new">Nuevo</option>
+              <option value="contacted">Contactado</option>
+              <option value="qualified">Calificado</option>
+              <option value="customer">Cliente</option>
+              <option value="lost">Perdido</option>
+            </select>
+            <button class="btn-sm" id="crm-search-btn">Buscar</button>
+            <button class="btn-ghost" id="crm-export-btn">Exportar CSV</button>
+          </div>
+          <div id="crm-table-container">
+            <div class="spinner"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── GOFIX REPARACIONES ── -->
+      <section id="page-gofix" class="page">
+        <div class="page-title">GoFix Reparaciones</div>
+        <div class="page-sub">Inventario de piezas y servicios de reparación de dispositivos.</div>
+
+        <div class="stats-bar" id="gofix-stats"></div>
+
+        <div class="table-wrapper">
+          <div class="table-toolbar">
+            <input type="search" id="inv-search" placeholder="Buscar ítem…" aria-label="Buscar inventario">
+            <button class="btn-sm" id="inv-search-btn">Buscar</button>
+          </div>
+          <div id="inv-table-container">
+            <div class="spinner"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── DISEÑO WEB ── -->
+      <section id="page-web" class="page">
+        <div class="page-title">Diseño Web</div>
+        <div class="page-sub">Gestión de proyectos y clientes del servicio de diseño web.</div>
+        <div class="coming-soon">
+          <h3>🚧 Próximamente</h3>
+          <p>Este módulo está en construcción. Los leads de diseño web ya se capturan en el CRM con source <code>web_design_form</code>.</p>
+        </div>
+      </section>
+
+      <!-- ── MINDSETBUILDER ── -->
+      <section id="page-mindset" class="page">
+        <div class="page-title">MindsetBuilder</div>
+        <div class="page-sub">Sistema de autonomía · Pack $100 · 7 infoproductos + mensajes diarios.</div>
+
+        <div id="mindset-books-grid" class="products-grid">
+          <div class="spinner"></div>
+        </div>
+      </section>
+
+      <!-- ── COMUNIDAD ── -->
+      <section id="page-comunidad" class="page">
+        <div class="page-title">Comunidad / Portal VIP</div>
+        <div class="page-sub">Miembros con acceso al Sistema Completo y mensajes diarios.</div>
+        <div class="coming-soon">
+          <h3>📰 Portal VIP</h3>
+          <p>Los usuarios con el pack "Sistema Completo" tienen acceso aquí. Gestiona membresías desde el CRM usando el filtro <code>source=book-purchase</code>.</p>
+        </div>
+      </section>
+
+      <!-- ── VENTAS ── -->
+      <section id="page-ventas" class="page">
+        <div class="page-title">Ventas</div>
+        <div class="page-sub">Compras activas y pagos procesados.</div>
+        <div id="sales-table-container">
+          <div class="spinner"></div>
+        </div>
+      </section>
+
+      <!-- ── INVENTARIO (BIBLIOTECA) ── -->
+      <section id="page-inventario" class="page">
+        <div class="page-title">Biblioteca / Inventario</div>
+        <div class="page-sub">Catálogo completo de dispositivos, piezas y servicios.</div>
+        <div class="table-wrapper">
+          <div class="table-toolbar">
+            <input type="search" id="bib-search" placeholder="Buscar…" aria-label="Buscar inventario">
+            <button class="btn-sm" id="bib-search-btn">Buscar</button>
+          </div>
+          <div id="bib-table-container">
+            <div class="spinner"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── DATABASES ── -->
+      <section id="page-databases" class="page">
+        <div class="page-title">Base de Datos</div>
+        <div class="page-sub">Estado del motor de base de datos.</div>
+        <div id="db-info">
+          <div class="spinner"></div>
+        </div>
+      </section>
+
+      <!-- ── PERFIL ── -->
+      <section id="page-perfil" class="page">
+        <div class="page-title">Mi Perfil / Historia</div>
+        <div class="page-sub">Infoproductos, servicios y configuración del perfil público.</div>
+
+        <!-- SERVICIO 1 A 1 -->
+        <div class="section-title">Servicio 1 a 1 · Acompañamiento Personal</div>
+        <div class="service-card">
+          <div class="service-card-label">
+            🎯 Servicio Premium
+          </div>
+          <div class="service-card-title">Sesiones 1 a 1 · Transformación Personal</div>
+          <div class="service-card-sub">3 llamadas de acompañamiento personalizado secuencial.</div>
+
+          <ul class="sessions-list" role="list">
+            <li class="session-item">
+              <div class="session-num" aria-label="Sesión 1">1</div>
+              <div class="session-body">
+                <div class="session-label">Primera llamada</div>
+                <div class="session-name">Observación</div>
+                <div class="session-desc">Sesión inicial de observación profunda. Escucho tu historia, tus patrones de pensamiento y tus puntos de quiebre. Sin juicios, sin diagnóstico aún. El objetivo es que te sientas comprendido y que yo pueda leer el contexto completo.</div>
+              </div>
+            </li>
+            <li class="session-item">
+              <div class="session-num" aria-label="Sesión 2">2</div>
+              <div class="session-body">
+                <div class="session-label">Segunda llamada</div>
+                <div class="session-name">Diagnóstico</div>
+                <div class="session-desc">Con la información de la primera sesión, realizamos un diagnóstico preciso: qué emociones te frenan, qué creencias limitan tu avance y cómo responde tu cognición ante el cambio. Esta sesión es el corazón del proceso.</div>
+              </div>
+            </li>
+            <li class="session-item">
+              <div class="session-num" aria-label="Sesión 3">3</div>
+              <div class="session-body">
+                <div class="session-label">Tercera llamada</div>
+                <div class="session-name">Recomendación</div>
+                <div class="session-desc">Después de observar tu respuesta al diagnóstico, entrego mi recomendación personalizada. El orden importa: la tercera llamada depende de lo que emergió en la segunda, porque tu reacción al diagnóstico es la retroalimentación que necesito para definir exactamente qué puedes cambiar y cómo.</div>
+              </div>
+            </li>
+          </ul>
+
+          <div class="service-process">
+            El proceso es estrictamente secuencial. La recomendación final solo es posible después del diagnóstico, porque es tu respuesta a ese diagnóstico —no el diagnóstico en sí— la que revela el camino de cambio real.
+          </div>
+
+          <div class="areas-list" aria-label="Áreas de trabajo">
+            <span class="area-tag">Emociones</span>
+            <span class="area-tag">Cognición</span>
+            <span class="area-tag">Psicología</span>
+          </div>
+        </div>
+
+        <!-- PACK SISTEMA COMPLETO -->
+        <div class="section-title">Pack Sistema Completo</div>
+        <div class="pack-card">
+          <div class="pack-card-label">Pack Único · Acceso Total</div>
+          <div class="pack-card-title">Sistema de Autonomía y Preparación ante el Ingeniero Social</div>
+          <div class="pack-card-sub">4 libros núcleo + 3 guías complementarias + mensajes diarios</div>
+          <div class="pack-price">$100 <span>USD · Pago único</span></div>
+        </div>
+
+        <!-- INFOPRODUCTOS (sin cantidades de páginas) -->
+        <div class="section-title">Infoproductos incluidos</div>
+        <div class="products-grid" id="perfil-books-grid">
+          <div class="spinner"></div>
+        </div>
+
+      </section>
+
+    </main>
+
+    <!-- FOOTER con newsletter MindsetBuilder -->
+    <footer id="app-footer" role="contentinfo">
+      <div class="newsletter-bar">
+        <p><strong>MindsetBuilder · Newsletter</strong><br>Recibe contenido de autonomía, cognición y psicología.</p>
+        <form class="newsletter-form" id="newsletter-form" aria-label="Suscripción newsletter">
+          <input type="email" id="newsletter-email" placeholder="tu@email.com" required aria-label="Email para newsletter">
+          <button type="submit" class="btn-sm">Suscribirme</button>
+        </form>
+        <span class="newsletter-msg" id="newsletter-msg">✓ ¡Suscrito!</span>
+      </div>
+    </footer>
+
+  </div><!-- /main-wrapper -->
+</div><!-- /app -->
+
+<script src="/js/leads.js"></script>
+<script>
+'use strict';
+
+const API = '';
+let TOKEN = localStorage.getItem('gfm_admin_token');
+let USER  = null;
+
+// ── AUTH ──────────────────────────────────────────────────
+async function doLogin(email, password) {
+  const r = await fetch(`${API}/api/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password }),
+  });
+  const data = await r.json();
+  if (!r.ok) throw new Error(data.message || 'Credenciales incorrectas');
+  TOKEN = data.token;
+  USER  = data.user;
+  localStorage.setItem('gfm_admin_token', TOKEN);
+  return USER;
+}
+
+function logout() {
+  localStorage.removeItem('gfm_admin_token');
+  TOKEN = null; USER = null;
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+}
+
+// ── API HELPER ────────────────────────────────────────────
+async function api(method, path, body) {
+  const opts = {
+    method,
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${TOKEN}` },
+  };
+  if (body) opts.body = JSON.stringify(body);
+  const r = await fetch(`${API}${path}`, opts);
+  if (r.status === 401) { logout(); throw new Error('Sesión expirada'); }
+  return r;
+}
+
+// ── NAVIGATION ────────────────────────────────────────────
+let currentPage = 'inicio';
+const pageLoaded = new Set();
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item[data-page]').forEach(b => b.classList.remove('active'));
+
+  const page = document.getElementById(`page-${id}`);
+  if (page) page.classList.add('active');
+
+  const navBtn = document.querySelector(`.nav-item[data-page="${id}"]`);
+  if (navBtn) navBtn.classList.add('active');
+
+  currentPage = id;
+  if (!pageLoaded.has(id)) {
+    pageLoaded.add(id);
+    loadPageData(id);
+  }
+}
+
+async function loadPageData(id) {
+  switch (id) {
+    case 'crm':       await loadCRM(); break;
+    case 'gofix':
+    case 'inventario':
+    case 'bib':       await loadInventory(id); break;
+    case 'databases': await loadDBInfo(); break;
+    case 'perfil':    await loadPerfil(); break;
+    case 'mindset':   await loadMindsetBooks(); break;
+    case 'ventas':    await loadVentas(); break;
+  }
+}
+
+// ── CLOCK (MIAMI EST/EDT) ─────────────────────────────────
+function updateClock() {
+  const el = document.getElementById('miami-clock');
+  if (!el) return;
+  const now = new Date().toLocaleTimeString('es-US', {
+    timeZone: 'America/New_York',
+    hour: '2-digit', minute: '2-digit', hour12: true,
+  });
+  el.textContent = `Miami ${now}`;
+}
+
+// ── HEALTH CHECK ─────────────────────────────────────────
+async function checkHealth() {
+  const chip  = document.getElementById('health-chip');
+  const label = document.getElementById('health-label');
+  try {
+    const r = await api('GET', '/api/admin/health');
+    const data = await r.json();
+    if (data.ok) {
+      chip.className = 'status-chip';
+      label.textContent = 'Sistema activo';
+    } else {
+      throw new Error('not ok');
+    }
+  } catch {
+    chip.className = 'status-chip error';
+    label.textContent = 'Sistema offline';
+  }
+}
+
+// ── LOAD HUB METADATA ────────────────────────────────────
+async function loadHubMeta() {
+  // Leads count
+  try {
+    const r = await api('GET', '/api/leads/stats');
+    if (r.ok) {
+      const { total, customers } = await r.json();
+      const el = document.getElementById('hub-leads-meta');
+      if (el) el.textContent = `${total} contactos · ${customers} clientes`;
+    }
+  } catch {}
+  // Inventory count
+  try {
+    const r = await api('GET', '/api/inventory?limit=1');
+    if (r.ok) {
+      const data = await r.json();
+      const total = data.total || (data.items?.length) || '';
+      const el = document.getElementById('hub-inventory-meta');
+      if (el && total) el.textContent = `${total.toLocaleString()} ítems en catálogo`;
+      else if (el) el.textContent = '';
+    }
+  } catch {}
+}
+
+// ── CRM ───────────────────────────────────────────────────
+async function loadCRM(params = {}) {
+  const container = document.getElementById('crm-table-container');
+  container.innerHTML = '<div class="spinner"></div>';
+
+  try {
+    const qs = new URLSearchParams({ limit: 100, ...params }).toString();
+    const [tableRes, statsRes] = await Promise.all([
+      api('GET', `/api/leads?${qs}`),
+      api('GET', '/api/leads/stats'),
+    ]);
+
+    const { leads, total } = await tableRes.json();
+    const stats = statsRes.ok ? await statsRes.json() : {};
+
+    // Stats bar
+    const statsBar = document.getElementById('crm-stats');
+    if (statsBar) {
+      statsBar.innerHTML = `
+        <div class="stat-chip"><div class="stat-chip-val">${stats.total ?? total ?? 0}</div><div class="stat-chip-label">Total leads</div></div>
+        <div class="stat-chip"><div class="stat-chip-val">${stats.customers ?? 0}</div><div class="stat-chip-label">Clientes</div></div>
+      `;
+    }
+
+    renderLeadsTable(leads, total, container);
+  } catch (e) {
+    container.innerHTML = `<div class="empty-state"><p>Error cargando leads: ${e.message}</p></div>`;
+  }
+}
+
+function renderLeadsTable(leads, total, container) {
+  if (!leads || leads.length === 0) {
+    container.innerHTML = '<div class="empty-state">👥<p>Sin contactos todavía. Los formularios de captura llenarán esta tabla.</p></div>';
+    return;
+  }
+
+  const statusBadge = (s) => {
+    const map = { new:'badge-yellow', contacted:'badge-blue', qualified:'badge-green', customer:'badge-green', lost:'badge-red' };
+    return `<span class="badge ${map[s]||'badge-gray'}">${s||'—'}</span>`;
+  };
+  const sourceBadge = (s) => {
+    const short = s?.replace('gofix_repair_form','GoFix').replace('web_design_form','Web').replace('newsletter_mindsetbuilder','Newsletter').replace('community_purchase_100','Comunidad').replace('whatsapp_click','WhatsApp').replace('checkout-started','Checkout').replace('book-purchase','Compra') || s || '—';
+    return `<span class="badge badge-gray">${short}</span>`;
+  };
+
+  const rows = leads.map(l => `
+    <tr>
+      <td>
+        <div style="font-weight:600">${[l.firstName, l.lastName].filter(Boolean).join(' ') || '—'}</div>
+        <div style="font-size:0.77rem;color:var(--muted)">${l.email || l.phone || ''}</div>
+      </td>
+      <td>${sourceBadge(l.source)}</td>
+      <td><span class="badge badge-gray">${l.channel||'—'}</span></td>
+      <td>${statusBadge(l.status)}</td>
+      <td>${l.hasPurchased ? `<span class="badge badge-green">$${((l.totalPurchaseCents||0)/100).toFixed(0)}</span>` : '—'}</td>
+      <td style="color:var(--muted);font-size:0.78rem">${new Date(l.createdAt).toLocaleDateString('es-US')}</td>
+      <td>
+        <a href="mailto:${l.email||''}" style="color:var(--accent);text-decoration:none;font-size:0.78rem" aria-label="Contactar ${l.email}">✉</a>
+      </td>
+    </tr>
+  `).join('');
+
+  container.innerHTML = `
+    <div style="padding:0.75rem 1rem;font-size:0.78rem;color:var(--muted);border-bottom:1px solid var(--border)">
+      ${total} contacto${total!==1?'s':''} encontrado${total!==1?'s':''}
+    </div>
+    <div style="overflow-x:auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Contacto</th><th>Origen</th><th>Canal</th><th>Estado</th><th>Compras</th><th>Creado</th><th>Acción</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+  `;
+}
+
+// CRM search/filter
+document.getElementById('crm-search-btn')?.addEventListener('click', () => {
+  const q      = document.getElementById('crm-search')?.value?.trim();
+  const source = document.getElementById('crm-source')?.value;
+  const status = document.getElementById('crm-status')?.value;
+  const params = {};
+  if (q)      params.q      = q;
+  if (source) params.source = source;
+  if (status) params.status = status;
+  pageLoaded.delete('crm');
+  loadCRM(params);
+});
+
+document.getElementById('crm-export-btn')?.addEventListener('click', () => {
+  const source = document.getElementById('crm-source')?.value;
+  const status = document.getElementById('crm-status')?.value;
+  const qs = new URLSearchParams();
+  if (source) qs.set('source', source);
+  if (status) qs.set('status', status);
+  window.open(`/api/leads/export.csv?${qs}`, '_blank');
+});
+
+// ── INVENTORY ─────────────────────────────────────────────
+async function loadInventory(pageId) {
+  const containerId = pageId === 'inventario' ? 'bib-table-container' : 'inv-table-container';
+  const container   = document.getElementById(containerId) || document.getElementById('inv-table-container');
+  if (!container) return;
+  container.innerHTML = '<div class="spinner"></div>';
+
+  try {
+    const r = await api('GET', '/api/inventory?limit=50');
+    const data = await r.json();
+    const items = data.items || data || [];
+    const total = data.total || items.length;
+
+    // Update hub meta
+    const hubMeta = document.getElementById('hub-inventory-meta');
+    if (hubMeta) hubMeta.textContent = `${total.toLocaleString()} ítems en catálogo`;
+
+    // Stats
+    const statsEl = document.getElementById('gofix-stats');
+    if (statsEl) {
+      statsEl.innerHTML = `<div class="stat-chip"><div class="stat-chip-val">${total.toLocaleString()}</div><div class="stat-chip-label">Ítems totales</div></div>`;
+    }
+
+    if (!items.length) {
+      container.innerHTML = '<div class="empty-state">📦<p>Inventario vacío.</p></div>';
+      return;
+    }
+
+    const rows = items.slice(0, 50).map(it => `
+      <tr>
+        <td style="font-weight:600">${it.name||'—'}</td>
+        <td style="color:var(--muted);font-size:0.78rem">${it.category||'—'}</td>
+        <td><span class="badge badge-gray">${it.repairType||'—'}</span></td>
+        <td>${it.salePrice ? `$${Number(it.salePrice).toFixed(2)}` : '—'}</td>
+        <td>${it.stock ?? '—'}</td>
+      </tr>
+    `).join('');
+
+    container.innerHTML = `
+      <div style="overflow-x:auto">
+        <table>
+          <thead><tr><th>Ítem</th><th>Categoría</th><th>Tipo</th><th>Precio</th><th>Stock</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+      ${total > 50 ? `<div style="padding:0.75rem 1rem;font-size:0.78rem;color:var(--muted);border-top:1px solid var(--border)">Mostrando 50 de ${total.toLocaleString()} ítems</div>` : ''}
+    `;
+  } catch (e) {
+    container.innerHTML = `<div class="empty-state"><p>${e.message}</p></div>`;
+  }
+}
+
+// ── DB INFO ───────────────────────────────────────────────
+async function loadDBInfo() {
+  const el = document.getElementById('db-info');
+  try {
+    const r = await api('GET', '/api/admin/health');
+    const d = await r.json();
+    el.innerHTML = `
+      <div class="stats-bar">
+        <div class="stat-chip">
+          <div class="stat-chip-val" style="font-size:1rem;color:${d.db?.sqlite==='connected'?'var(--success)':'var(--danger)'}">${d.db?.sqlite==='connected'?'✓ Conectado':'✗ Error'}</div>
+          <div class="stat-chip-label">SQLite</div>
+        </div>
+        <div class="stat-chip">
+          <div class="stat-chip-val" style="font-size:1rem;color:var(--muted)">${d.db?.mongo||'—'}</div>
+          <div class="stat-chip-label">MongoDB</div>
+        </div>
+        <div class="stat-chip">
+          <div class="stat-chip-val" style="font-size:1rem">${Math.floor(d.uptime||0)}s</div>
+          <div class="stat-chip-label">Uptime</div>
+        </div>
+      </div>
+      <div class="coming-soon" style="margin-top:1rem">
+        <h3>🗄️ Tablas disponibles</h3>
+        <p style="margin-top:0.75rem;line-height:2">
+          <code>users</code> · <code>inventory_items</code> · <code>documents</code> ·
+          <code>customers</code> · <code>quotes</code> · <code>leads</code> ·
+          <code>lead_activities</code> · <code>purchases</code> · <code>ebooks</code> ·
+          <code>daily_messages</code>
+        </p>
+      </div>
+    `;
+  } catch {
+    el.innerHTML = '<div class="empty-state"><p>No se pudo obtener el estado del sistema.</p></div>';
+  }
+}
+
+// ── PERFIL / INFOPRODUCTOS ────────────────────────────────
+async function loadPerfil() {
+  const grid = document.getElementById('perfil-books-grid');
+  try {
+    const r = await fetch('/api/books');
+    const { books, pack } = await r.json();
+
+    if (!books || books.length === 0) {
+      grid.innerHTML = '<div class="empty-state"><p>Sin infoproductos registrados.</p></div>';
+      return;
+    }
+
+    // Solo mostrar título y tipo (núcleo/guía) — sin cantidades de páginas
+    grid.innerHTML = books.map(b => `
+      <div class="product-card">
+        <div class="product-card-cover"></div>
+        <div class="product-card-body">
+          <div class="product-card-badge">${b.nucleo ? 'Libro Núcleo' : 'Guía Complementaria'}</div>
+          <div class="product-card-title">${b.title}</div>
+        </div>
+      </div>
+    `).join('');
+  } catch {
+    grid.innerHTML = '<div class="empty-state"><p>Error cargando infoproductos.</p></div>';
+  }
+}
+
+// ── MINDSET BOOKS ─────────────────────────────────────────
+async function loadMindsetBooks() {
+  const grid = document.getElementById('mindset-books-grid');
+  try {
+    const r = await fetch('/api/books');
+    const { books } = await r.json();
+    grid.innerHTML = `
+      <div class="pack-card" style="grid-column:1/-1">
+        <div class="pack-card-label">Pack Único · Acceso Total</div>
+        <div class="pack-card-title">Sistema de Autonomía y Preparación</div>
+        <div class="pack-card-sub">4 libros núcleo + 3 guías + mensajes diarios</div>
+        <div class="pack-price">$100 <span>USD · Pago único</span></div>
+      </div>
+      ${(books||[]).map(b => `
+        <div class="product-card">
+          <div class="product-card-cover"></div>
+          <div class="product-card-body">
+            <div class="product-card-badge">${b.nucleo ? 'Núcleo' : 'Guía'}</div>
+            <div class="product-card-title">${b.title}</div>
+          </div>
+        </div>
+      `).join('')}
+    `;
+  } catch {
+    grid.innerHTML = '<div class="empty-state"><p>Error cargando biblioteca.</p></div>';
+  }
+}
+
+// ── VENTAS ────────────────────────────────────────────────
+async function loadVentas() {
+  const el = document.getElementById('sales-table-container');
+  try {
+    const r = await api('GET', '/api/leads?source=book-purchase&limit=50');
+    const { leads, total } = await r.json();
+    if (!leads || !leads.length) {
+      el.innerHTML = '<div class="empty-state">💰<p>Sin ventas registradas todavía.</p></div>';
+      return;
+    }
+    const rows = leads.map(l => `
+      <tr>
+        <td style="font-weight:600">${[l.firstName,l.lastName].filter(Boolean).join(' ')||l.email||'—'}</td>
+        <td>${l.email||'—'}</td>
+        <td><span class="badge badge-green">$${((l.totalPurchaseCents||0)/100).toFixed(0)} USD</span></td>
+        <td style="color:var(--muted);font-size:0.78rem">${new Date(l.createdAt).toLocaleDateString('es-US')}</td>
+      </tr>
+    `).join('');
+    el.innerHTML = `
+      <div class="table-wrapper">
+        <div style="padding:0.75rem 1rem;font-size:0.78rem;color:var(--muted);border-bottom:1px solid var(--border)">${total} ventas</div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead><tr><th>Cliente</th><th>Email</th><th>Monto</th><th>Fecha</th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+      </div>
+    `;
+  } catch (e) {
+    el.innerHTML = `<div class="empty-state"><p>${e.message}</p></div>`;
+  }
+}
+
+// ── NEWSLETTER ────────────────────────────────────────────
+document.getElementById('newsletter-form')?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = document.getElementById('newsletter-email')?.value?.trim();
+  if (!email) return;
+  try {
+    await fetch('/api/leads', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email,
+        source: 'newsletter_mindsetbuilder',
+        channel: 'newsletter',
+      }),
+      keepalive: true,
+    });
+    const msg = document.getElementById('newsletter-msg');
+    if (msg) { msg.style.display = 'inline'; setTimeout(() => { msg.style.display='none'; }, 4000); }
+    document.getElementById('newsletter-email').value = '';
+    if (typeof captureLead === 'function') {
+      captureLead({ email, source: 'newsletter_mindsetbuilder', channel: 'newsletter' });
+    }
+  } catch {}
+});
+
+// ── INIT ──────────────────────────────────────────────────
+async function verifyToken() {
+  if (!TOKEN) return null;
+  try {
+    const r = await api('GET', '/api/auth/me');
+    if (!r.ok) return null;
+    return await r.json();
+  } catch { return null; }
+}
+
+async function init() {
+  // Clock
+  updateClock();
+  setInterval(updateClock, 30000);
+
+  // Sidebar toggle
+  const sidebar = document.getElementById('sidebar');
+  document.getElementById('sidebar-toggle')?.addEventListener('click', () => {
+    sidebar.classList.toggle('collapsed');
+  });
+
+  // Nav items
+  document.querySelectorAll('.nav-item[data-page]').forEach(btn => {
+    btn.addEventListener('click', () => showPage(btn.dataset.page));
+    btn.addEventListener('keydown', e => { if (e.key==='Enter'||e.key===' ') showPage(btn.dataset.page); });
+  });
+
+  // Hub card navigation
+  document.querySelectorAll('.hub-card[data-goto]').forEach(card => {
+    const handler = () => showPage(card.dataset.goto);
+    card.addEventListener('click', handler);
+    card.addEventListener('keydown', e => { if (e.key==='Enter'||e.key===' ') handler(); });
+  });
+
+  // Logout
+  [document.getElementById('logout-btn'), document.getElementById('logout-top')].forEach(b => {
+    b?.addEventListener('click', logout);
+  });
+
+  // If token exists, verify it
+  if (TOKEN) {
+    const user = await verifyToken();
+    if (user) {
+      USER = user.user || user;
+      showApp();
+      return;
+    }
+  }
+
+  // Show login
+  document.getElementById('login-screen').style.display = 'flex';
+}
+
+function showApp() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+  document.getElementById('user-name').textContent = USER?.name || USER?.email || 'Admin';
+  checkHealth();
+  loadHubMeta();
+  // Preload page data can be done lazily on first nav
+}
+
+// Login form
+document.getElementById('login-form')?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = document.getElementById('login-email').value.trim();
+  const pass  = document.getElementById('login-pass').value;
+  const errEl = document.getElementById('login-error');
+  const btn   = document.getElementById('login-btn');
+  errEl.style.display = 'none';
+  btn.textContent = 'Entrando…';
+  btn.disabled = true;
+  try {
+    USER = await doLogin(email, pass);
+    showApp();
+  } catch (err) {
+    errEl.textContent = err.message;
+    errEl.style.display = 'block';
+  } finally {
+    btn.textContent = 'Entrar';
+    btn.disabled = false;
+  }
+});
+
+init();
+</script>
+</body>
+</html>

@@ -26,6 +26,12 @@ Información clave de GO FIX MIAMI:
 
 Responde siempre en español de forma amigable, concisa y profesional. Si el cliente quiere un precio exacto o agendar, anímalo a contactarnos por WhatsApp al +1 (786) 806-2197 o usar el cotizador en la página.`;
 
+// Public endpoint so the React frontend can check the flag before rendering the button.
+// The frontend should call GET /api/chat/status and hide the widget when enabled=false.
+router.get("/status", (_req, res) => {
+  res.json({ enabled: process.env.ENABLE_PUBLIC_AI_ASSISTANT === "true" });
+});
+
 router.post("/", async (req, res) => {
   // Feature flag: set ENABLE_PUBLIC_AI_ASSISTANT=true in .env to re-activate
   if (process.env.ENABLE_PUBLIC_AI_ASSISTANT !== "true") {

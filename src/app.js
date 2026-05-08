@@ -15,6 +15,7 @@ import assetRoutes from "./routes/assetRoutes.js";
 import googleWorkspaceRoutes from "./routes/googleWorkspaceRoutes.js";
 import bookRoutes from "./routes/bookRoutes.js";
 import leadRoutes from "./routes/leadRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
 import { checkoutRouter as stripeCheckoutRoutes, webhookRouter as stripeWebhookRoutes } from "./routes/stripeRoutes.js";
 import dailyMessageRoutes from "./routes/dailyMessageRoutes.js";
 import { errorHandler, notFoundHandler } from "./middlewares/errorHandler.js";
@@ -83,6 +84,10 @@ app.get("/api/health", (_req, res) => {
 // Serve uploaded files as static assets
 app.use("/uploads", express.static(path.join(__dirname, "../public/uploads")));
 
+// Admin panel + shared JS helpers (served as static HTML/CSS/JS)
+app.use("/admin", express.static(path.join(__dirname, "../public/admin")));
+app.use("/js", express.static(path.join(__dirname, "../public/js")));
+
 app.use("/api", landingRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/auth", authRoutes);
@@ -91,6 +96,7 @@ app.use("/api/inventory", inventoryRoutes);
 app.use("/api/assets", assetRoutes);
 app.use("/api/books", bookRoutes);
 app.use("/api/leads", leadRoutes);
+app.use("/api/admin", adminRoutes);
 app.use("/api/checkout", stripeCheckoutRoutes);
 app.use("/api/daily-message", dailyMessageRoutes);
 app.use("/api/integrations/google-sheets", googleSheetsRoutes);
